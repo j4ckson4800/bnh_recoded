@@ -11,7 +11,6 @@
 #include "MolotovTimer.hpp"
 #include "SpecList.hpp"
 #include "LegitAA.hpp"
-#include "../hvh_stuff/Resolver.hpp"
 #include "blockbot.hpp"
 #include "../event_logger/logger.hpp"
 
@@ -101,7 +100,7 @@ void c_misc::frame_stage(ClientFrameStage_t stage) {
 	if (!g_EngineClient->IsConnected()) return;
 	if (!g_LocalPlayer->IsAlive()) return;
 
-	if (options.resolver_enabled && stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START) g_Resolver->LegitResolver();
+	//if (options.resolver_enabled && stage == FRAME_NET_UPDATE_POSTDATAUPDATE_START) g_Resolver->LegitResolver();
 }
 
 // private

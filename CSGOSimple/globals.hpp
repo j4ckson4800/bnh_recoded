@@ -1,6 +1,5 @@
 #pragma once
 #include <Windows.h>
-#include "moveax/moveax.hpp"
 
 namespace CheatGVars {
 	extern float OFOV;
@@ -11,5 +10,4 @@ namespace CheatGVars {
 	extern bool SlowWalking;
 	extern bool UpdateNightMode;
 	extern LPVOID lpvReserved;
-	extern moveax_user_info_t UserInfo;
 }

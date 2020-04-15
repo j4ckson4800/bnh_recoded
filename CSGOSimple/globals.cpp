@@ -14,5 +14,4 @@ namespace CheatGVars {
 	bool UpdateNightMode;
 
 	LPVOID lpvReserved;
-	moveax_user_info_t UserInfo;
 }

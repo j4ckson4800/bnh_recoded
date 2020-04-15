@@ -185,9 +185,6 @@
     <ClCompile Include="features\misc\LegitAA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="features\hvh_stuff\Resolver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="features\legitbot\weapon_groups.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -550,9 +547,6 @@
     <ClInclude Include="features\misc\LegitAA.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="features\hvh_stuff\Resolver.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="fonts\visitor2.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -583,9 +577,5 @@
     <ClInclude Include="fonts\ubuntumono.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="minhook.lib" />
-    <Library Include="moveax\VMProtectSDK32.lib" />
   </ItemGroup>
 </Project>

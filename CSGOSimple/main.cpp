@@ -15,47 +15,12 @@
 #include "render.hpp"
 #include "globals.hpp"
 
-#include "moveax/moveax.hpp"
-/*#ifndef _DEBUG
-    #pragma comment(lib, "moveax_public.lib")
-#endif*/
-
-class c_hack : public i_moveax_hack_listener {
-public:
-    void on_handshake(bool success, moveax_user_info_t& user_info) override {
-        if (!success) {
-            ExitProcess(0);
-            return;
-        }
-
-        CheatGVars::UserInfo = user_info;
-
-        //char buffer[128] = { 0 };
-        //snprintf(buffer, sizeof(buffer),
-        //    "Welcome back, %s!\nDays left: %d",
-        //    user_info.name, user_info.days_left
-        //);
-        //MessageBoxA(0, buffer, "bruh", 0);
-    }
-};
-
-c_hack hack;
-
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
 	while (!GetModuleHandleA("serverbrowser.dll"))
 		Sleep(1000);
 
     Beep(408, 257);
-//#ifdef _DEBUG
-    moveax_user_info_t user_info = { "user", 1337 };
-    hack.on_handshake(true, user_info);
-//#else
-//    moveax_public::init(CheatGVars::lpvReserved, &hack);
-//
-//    while (moveax_public::is_connected())
-//        moveax_public::run();
-//#endif
 
 #ifdef _DEBUG
     Utils::AttachConsole();

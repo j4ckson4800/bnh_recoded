@@ -52,7 +52,7 @@ void Menu::Render()
 
 	static bool once{ false };
 	if (!once) {
-		g_Notification.Push("spectre.fun", ((std::string("Welcome back, ") + std::string(CheatGVars::UserInfo.name))).c_str());
+		g_Notification.Push("spectre.fun", "Welcome back, huesos");
 		once = true;
 	}
 	g_SpecList->Draw();
@@ -181,9 +181,9 @@ void Menu::Render()
 
 		std::string rightsidetext;
 		rightsidetext += "logged in as ";
-		rightsidetext += CheatGVars::UserInfo.name;
+		rightsidetext += "huesos";
 		rightsidetext += ", days left: ";
-		rightsidetext += std::to_string(CheatGVars::UserInfo.days_left);
+		rightsidetext += "1337";
 
 		if (g_LocalPlayer && g_EngineClient && g_EngineClient->IsInGame() && g_EngineClient->IsConnected() && g_LocalPlayer->m_hActiveWeapon()) {
 			short defindex = g_LocalPlayer->m_hActiveWeapon()->m_Item().m_iItemDefinitionIndex();

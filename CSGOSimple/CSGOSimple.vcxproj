@@ -161,7 +161,6 @@
     <ClCompile Include="features\changer\knife_fix.cpp" />
     <ClCompile Include="features\changer\parser.cpp" />
     <ClCompile Include="features\event_logger\logger.cpp" />
-    <ClCompile Include="features\hvh_stuff\Resolver.cpp" />
     <ClCompile Include="features\legitbot\aimbot.cpp" />
     <ClCompile Include="features\legitbot\autowall.cpp" />
     <ClCompile Include="features\legitbot\backtrack.cpp" />
@@ -224,7 +223,6 @@
     <ClInclude Include="features\changer\parser.hpp" />
     <ClInclude Include="features\event_logger\logger.hpp" />
     <ClInclude Include="features\features.hpp" />
-    <ClInclude Include="features\hvh_stuff\Resolver.hpp" />
     <ClInclude Include="features\legitbot\aimbot.hpp" />
     <ClInclude Include="features\legitbot\autowall.hpp" />
     <ClInclude Include="features\legitbot\backtrack.hpp" />
@@ -338,8 +336,6 @@
     <ClInclude Include="valve_sdk\netvars.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="minhook.lib" />
-    <Library Include="moveax\VMProtectSDK32.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
