@@ -107,7 +107,7 @@ void Skins::OnFrameStageNotify(bool frame_end) {
 
 				assert(glove);
 				{
-					static auto set_abs_origin_addr = Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "55 8B EC 83 E4 F8 51 53 56 57 8B F1");
+					static auto set_abs_origin_addr = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "55 8B EC 83 E4 F8 51 53 56 57 8B F1");
 					const auto set_abs_origin_fn = reinterpret_cast<void(__thiscall*)(void*, const std::array<float, 3>&)>(set_abs_origin_addr);
 					static constexpr std::array<float, 3> new_pos = { 10000.f, 10000.f, 10000.f };
 					set_abs_origin_fn(glove, new_pos);

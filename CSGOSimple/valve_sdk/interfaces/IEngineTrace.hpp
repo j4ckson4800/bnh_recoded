@@ -141,7 +141,8 @@ public:
     {
         return TraceType::TRACE_EVERYTHING;
     }
-    void* pSkip;
+    IHandleEntity* pSkip;
+    int m_icollisionGroup;
 };
 
 class CTraceFilterSkipEntity : public ITraceFilter

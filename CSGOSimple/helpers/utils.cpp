@@ -335,14 +335,14 @@ namespace Utils {
 
     template<class T>
     static T* FindHudElement(const char* name) {
-        static auto fn = *reinterpret_cast<DWORD**>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), ("B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08")) + 1);
+        static auto fn = *reinterpret_cast<DWORD**>(Utils::PatternScan(GetModuleHandleA("client.dll"), ("B9 ? ? ? ? E8 ? ? ? ? 8B 5D 08")) + 1);
 
-        static auto find_hud_element = reinterpret_cast<DWORD(__thiscall*)(void*, const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), ("55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39 77 28")));
+        static auto find_hud_element = reinterpret_cast<DWORD(__thiscall*)(void*, const char*)>(Utils::PatternScan(GetModuleHandleA("client.dll"), ("55 8B EC 53 8B 5D 08 56 57 8B F9 33 F6 39 77 28")));
         return (T*)find_hud_element(fn, name);
     }
 
     void ForceFullUpdate() {
-        auto fn = reinterpret_cast<std::int32_t(__thiscall*)(void*, std::int32_t)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), ("55 8B EC 51 53 56 8B 75 08 8B D9 57 6B FE 2C")));
+        auto fn = reinterpret_cast<std::int32_t(__thiscall*)(void*, std::int32_t)>(Utils::PatternScan(GetModuleHandleA("client.dll"), ("55 8B EC 51 53 56 8B 75 08 8B D9 57 6B FE 2C")));
 
         auto element = FindHudElement<std::uintptr_t*>(("CCSGO_HudWeaponSelection"));
 

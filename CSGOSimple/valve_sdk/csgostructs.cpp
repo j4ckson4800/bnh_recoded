@@ -145,7 +145,8 @@ bool C_BaseCombatWeapon::CanFire()
 
 bool C_BaseCombatWeapon::IsGrenade()
 {
-	return GetCSWeaponData()->iWeaponType == WEAPONTYPE_GRENADE;
+	short defidx = m_Item().m_iItemDefinitionIndex();
+	return defidx == WEAPON_FLASHBANG || defidx == WEAPON_SMOKEGRENADE || defidx == WEAPON_HEGRENADE || defidx == WEAPON_MOLOTOV || defidx == WEAPON_DECOY || defidx == WEAPON_INCGRENADE;
 }
 
 bool C_BaseCombatWeapon::IsGun()
@@ -212,7 +213,7 @@ bool C_BaseCombatWeapon::IsSniper()
 
 bool C_BaseCombatWeapon::IsReloading()
 {
-	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "C6 87 ? ? ? ? ? 8B 06 8B CE FF 90") + 2);
+	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "C6 87 ? ? ? ? ? 8B 06 8B CE FF 90") + 2);
 	return *(bool*)((uintptr_t)this + inReload);
 }
 
@@ -232,19 +233,19 @@ void C_BaseCombatWeapon::UpdateAccuracyPenalty()
 }
 
 CUtlVector<IRefCounted*>& C_BaseCombatWeapon::m_CustomMaterials()
-{	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "83 BE ? ? ? ? ? 7F 67") + 2) - 12;
+{	static auto inReload = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "83 BE ? ? ? ? ? 7F 67") + 2) - 12;
 	return *(CUtlVector<IRefCounted*>*)((uintptr_t)this + inReload);
 }
 
 bool* C_BaseCombatWeapon::m_bCustomMaterialInitialized()
 {
-	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "C6 86 ? ? ? ? ? FF 50 04") + 2);
+	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "C6 86 ? ? ? ? ? FF 50 04") + 2);
 	return (bool*)((uintptr_t)this + currentCommand);
 }
 
 CUserCmd*& C_BasePlayer::m_pCurrentCommand()
 {
-	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "89 BE ? ? ? ? E8 ? ? ? ? 85 FF") + 2);
+	static auto currentCommand = *(uint32_t*)(Utils::PatternScan(GetModuleHandleW(L"client.dll"), "89 BE ? ? ? ? E8 ? ? ? ? 85 FF") + 2);
 	return *(CUserCmd**)((uintptr_t)this + currentCommand);
 }
 
@@ -276,7 +277,7 @@ int C_BasePlayer::GetSequenceActivity(int sequence)
 	// sig for C_BaseAnimating version: 55 8B EC 83 7D 08 FF 56 8B F1 74 3D
 	// c_csplayer vfunc 242, follow calls to find the function.
 	// Thanks @Kron1Q for merge request
-	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "55 8B EC 53 8B 5D 08 56 8B F1 83"));
+	static auto get_sequence_activity = reinterpret_cast<int(__fastcall*)(void*, studiohdr_t*, int)>(Utils::PatternScan(GetModuleHandle(L"client.dll"), "55 8B EC 53 8B 5D 08 56 8B F1 83"));
 
 	return get_sequence_activity(this, hdr, sequence);
 }
@@ -289,7 +290,7 @@ CCSGOPlayerAnimState *C_BasePlayer::GetPlayerAnimState()
 void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angle)
 {
 	static auto UpdateAnimState = Utils::PatternScan(
-		GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
+		GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 18 56 57 8B F9 F3 0F 11 54 24");
 
 	if (!UpdateAnimState)
 		return;
@@ -312,7 +313,7 @@ void C_BasePlayer::UpdateAnimationState(CCSGOPlayerAnimState *state, QAngle angl
 void C_BasePlayer::ResetAnimationState(CCSGOPlayerAnimState *state)
 {
 	using ResetAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*);
-	static auto ResetAnimState = (ResetAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "56 6A 01 68 ? ? ? ? 8B F1");
+	static auto ResetAnimState = (ResetAnimState_t)Utils::PatternScan(GetModuleHandleA("client.dll"), "56 6A 01 68 ? ? ? ? 8B F1");
 	if (!ResetAnimState)
 		return;
 
@@ -322,7 +323,7 @@ void C_BasePlayer::ResetAnimationState(CCSGOPlayerAnimState *state)
 void C_BasePlayer::CreateAnimationState(CCSGOPlayerAnimState *state)
 {
 	using CreateAnimState_t = void(__thiscall*)(CCSGOPlayerAnimState*, C_BasePlayer*);
-	static auto CreateAnimState = (CreateAnimState_t)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46");
+	static auto CreateAnimState = (CreateAnimState_t)Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 56 8B F1 B9 ? ? ? ? C7 46");
 	if (!CreateAnimState)
 		return;
 
@@ -356,7 +357,7 @@ bool C_BasePlayer::HasC4()
 {
 	static auto fnHasC4
 		= reinterpret_cast<bool(__thiscall*)(void*)>(
-			Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "56 8B F1 85 F6 74 31")
+			Utils::PatternScan(GetModuleHandleW(L"client.dll"), "56 8B F1 85 F6 74 31")
 			);
 
 	return fnHasC4(this);
@@ -489,7 +490,7 @@ void C_BasePlayer::UpdateClientSideAnimation()
 
 void C_BasePlayer::InvalidateBoneCache()
 {
-	static DWORD addr = (DWORD)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
+	static DWORD addr = (DWORD)Utils::PatternScan(GetModuleHandleA("client.dll"), "80 3D ? ? ? ? ? 74 16 A1 ? ? ? ? 48 C7 81");
 
 	*(int*)((uintptr_t)this + 0xA30) = g_GlobalVars->framecount; //we'll skip occlusion checks now
 	*(int*)((uintptr_t)this + 0xA28) = 0;//clear occlusion flags
@@ -541,13 +542,13 @@ float CGlobalVarsBase::ServerTime(CUserCmd* cmd) {
 
 KeyValues* KeyValues::FindKey(const char* keyName, bool bCreate)
 {
-	static auto key_values_find_key = reinterpret_cast<KeyValues * (__thiscall*)(void*, const char*, bool)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 EC 1C 53 8B D9 85 DB"));
+	static auto key_values_find_key = reinterpret_cast<KeyValues * (__thiscall*)(void*, const char*, bool)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 EC 1C 53 8B D9 85 DB"));
 	return key_values_find_key(this, keyName, bCreate);
 }
 
 const char* KeyValues::GetString(KeyValues* pThis, const char* keyName, const char* defaultValue)
 {
-	static auto key_values_get_string = reinterpret_cast<const char* (__thiscall*)(void*, const char*, const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 C0 81 EC ? ? ? ? 53 8B 5D 08"));
+	static auto key_values_get_string = reinterpret_cast<const char* (__thiscall*)(void*, const char*, const char*)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 C0 81 EC ? ? ? ? 53 8B 5D 08"));
 	return key_values_get_string(pThis, keyName, defaultValue);
 }
 
@@ -562,7 +563,7 @@ bool KeyValues::LoadFromBuffer(KeyValues* pThis, const char* pszFirst, const cha
 	//.text : 1041E428                 push    offset FileName
 	//.text : 1041E42D                 push    offset aGame_1; "game"
 
-	static auto callLoadBuff = reinterpret_cast<bool(__thiscall*)(KeyValues*, const char*, const char*, PVOID, PVOID, PVOID, PVOID)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89 4C 24 04"));
+	static auto callLoadBuff = reinterpret_cast<bool(__thiscall*)(KeyValues*, const char*, const char*, PVOID, PVOID, PVOID, PVOID)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 83 EC 34 53 8B 5D 0C 89 4C 24 04"));
 
 	return callLoadBuff(pThis, pszFirst, pszSecond, pSomething, pAnother, pLast, pAnother2);
 }
@@ -571,7 +572,7 @@ void KeyValues::SetString(const char* name, const char* value)
 {
 	auto keyvalues = FindKey(name, 1);
 
-	static auto fnSetString = reinterpret_cast<void(__thiscall*)(KeyValues*, const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"));
+	static auto fnSetString = reinterpret_cast<void(__thiscall*)(KeyValues*, const char*)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC A1 ? ? ? ? 53 56 57 8B F9 8B 08 8B 01"));
 	if (keyvalues)
 		fnSetString(keyvalues, value);
 }

@@ -16,7 +16,7 @@ void CPredictionSystem::StartPrediction(C_BasePlayer* pLocal, CUserCmd* cmd)
 	if (!bInit) {
 		//.text:1016F1ED                 mov     ecx, dword_10C18244           m_pPredictionRandomSeed
 		//.text:1016F1F3                 mov     edx, offset aSelectweighted; "SelectWeightedSequence"
-		m_pPredictionRandomSeed = *(int**)(Utils::PatternScan(GetModuleHandle(L"client_panorama.dll"), "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04") + 0x2);
+		m_pPredictionRandomSeed = *(int**)(Utils::PatternScan(GetModuleHandle(L"client.dll"), "8B 0D ? ? ? ? BA ? ? ? ? E8 ? ? ? ? 83 C4 04") + 0x2);
 		bInit = true;
 	}
 

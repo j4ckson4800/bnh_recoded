@@ -25,7 +25,7 @@ namespace Interfaces
     void Initialize()
     {
         auto engineFactory    = get_module_factory(GetModuleHandleW(L"engine.dll"));
-        auto clientFactory    = get_module_factory(GetModuleHandleW(L"client_panorama.dll"));
+        auto clientFactory    = get_module_factory(GetModuleHandleW(L"client.dll"));
         auto valveStdFactory  = get_module_factory(GetModuleHandleW(L"vstdlib.dll"));
         auto vguiFactory      = get_module_factory(GetModuleHandleW(L"vguimatsurface.dll"));
         auto vgui2Factory     = get_module_factory(GetModuleHandleW(L"vgui2.dll"));
@@ -58,14 +58,14 @@ namespace Interfaces
         g_Localize            = get_interface<ILocalize>           (localizeFactory , "Localize_001");
         g_FileSys             = get_interface<IBaseFileSystem>     (filesysFactory , "VBaseFileSystem011");
 
-        auto client = GetModuleHandleW(L"client_panorama.dll");
+        auto client = GetModuleHandleW(L"client.dll");
         auto engine = GetModuleHandleW(L"engine.dll");
         auto dx9api = GetModuleHandleW(L"shaderapidx9.dll");
         auto stdlib = GetModuleHandleA("vstdlib.dll");
 		do {
 			g_ClientMode  =      **(IClientMode***)((*(uintptr_t**)g_CHLClient)[10] + 0x5);
 		} while (!g_ClientMode);
-        g_GlobalVars      =  **(CGlobalVarsBase***)((*(uintptr_t**)g_CHLClient)[0] + 0x1B);
+        g_GlobalVars = **(CGlobalVarsBase***)(Utils::PatternScan(client, "A1 ? ? ? ? 5E 8B 40 10") + 1);
 
 		g_Input           =             *(CInput**)(Utils::PatternScan(client, "B9 ? ? ? ? F3 0F 11 04 24 FF 50 10") + 1);
 		g_MoveHelper      =      **(IMoveHelper***)(Utils::PatternScan(client, "8B 0D ? ? ? ? 8B 45 ? 51 8B D4 89 02 8B 01") + 2);

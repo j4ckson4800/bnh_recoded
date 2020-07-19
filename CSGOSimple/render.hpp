@@ -14,15 +14,16 @@
 #include "imgui/impl/imgui_impl_win32.h"
 
 #include "options.hpp"
-
+#include "valve_sdk/Math/QAngle.hpp"
+#include "valve_sdk/Math/Vector.hpp"
 #include "valve_sdk/misc/Color.hpp"
+
+#include "helpers/math.hpp"
 
 extern ImFont* g_pDefaultFont;
 extern ImFont* g_pSecondFont;
 extern ImFont* g_pFlagsFont;
 
-
-class Vector;
 
 class Render
 	: public Singleton<Render>
@@ -151,6 +152,45 @@ public:
 	inline void PopClipRect() {
 		if (!g_Unload)
 			draw_list->PopClipRect();
+	}
+	inline void RenderCube(Vector origin, float scale, QAngle angle, ImU32 color, float thickness) const {
+		if (g_Unload) return;
+		
+		Vector forward, right, up;
+		Math::AngleVectors(angle, forward, right, up);
+
+		Vector points[8];
+		points[0] = origin - (right * scale) + (up * scale) - (forward * scale); // BLT
+		points[1] = origin + (right * scale) + (up * scale) - (forward * scale); // BRT
+		points[2] = origin - (right * scale) - (up * scale) - (forward * scale); // BLB
+		points[3] = origin + (right * scale) - (up * scale) - (forward * scale); // BRB
+		points[4] = origin - (right * scale) + (up * scale) + (forward * scale); // FLT
+		points[5] = origin + (right * scale) + (up * scale) + (forward * scale); // FRT
+		points[6] = origin - (right * scale) - (up * scale) + (forward * scale); // FLB
+		points[7] = origin + (right * scale) - (up * scale) + (forward * scale); // FRB
+
+		Vector points_screen[8];
+		for (auto i = 0; i < 8; i++)
+			if (!Math::WorldToScreen(points[i], points_screen[i]))
+				return;
+
+		// Back frame
+		draw_list->AddLine(ImVec2(points_screen[0].x, points_screen[0].y), ImVec2(points_screen[1].x, points_screen[1].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[0].x, points_screen[0].y), ImVec2(points_screen[2].x, points_screen[2].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[3].x, points_screen[3].y), ImVec2(points_screen[1].x, points_screen[1].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[3].x, points_screen[3].y), ImVec2(points_screen[2].x, points_screen[2].y), color, thickness);
+
+		// Frame connector
+		draw_list->AddLine(ImVec2(points_screen[0].x, points_screen[0].y), ImVec2(points_screen[4].x, points_screen[4].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[1].x, points_screen[1].y), ImVec2(points_screen[5].x, points_screen[5].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[2].x, points_screen[2].y), ImVec2(points_screen[6].x, points_screen[6].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[3].x, points_screen[3].y), ImVec2(points_screen[7].x, points_screen[7].y), color, thickness);
+
+		// Front frame
+		draw_list->AddLine(ImVec2(points_screen[4].x, points_screen[4].y), ImVec2(points_screen[5].x, points_screen[5].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[4].x, points_screen[4].y), ImVec2(points_screen[6].x, points_screen[6].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[7].x, points_screen[7].y), ImVec2(points_screen[5].x, points_screen[5].y), color, thickness);
+		draw_list->AddLine(ImVec2(points_screen[7].x, points_screen[7].y), ImVec2(points_screen[6].x, points_screen[6].y), color, thickness);
 	}
 	void RenderCircleDualColor(float x, float y, float rad, float rotate, int type, int resolution, DWORD color, DWORD color2);
 	void RenderCircleDualColor(float x, float y, float rad, float rotate, int type, int resolution);

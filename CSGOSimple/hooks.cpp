@@ -78,7 +78,7 @@ namespace Hooks {
 		MH_Initialize();
 
 		// setupbones hook(currently needed only for slowwalk animation)
-		SetupBones_addr = (void*)Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 8B 0D");
+		SetupBones_addr = (void*)Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F0 B8 ? ? ? ? E8 ? ? ? ? 56 57 8B F9 8B 0D");
 		MH_CreateHook(SetupBones_addr, hkSetupBones, &oSetupBones);
 		MH_EnableHook(SetupBones_addr);
 	}
@@ -201,7 +201,7 @@ namespace Hooks {
 
 		g_GlobalVars->ServerTime(cmd);
 
-
+		
 		g_Misc->create_move(cmd, bSendPacket);
 		EdgeJump::PrePredictionCreateMove(cmd);
 		CPredictionSystem::Get().StartPrediction(g_LocalPlayer, cmd); {
@@ -299,7 +299,7 @@ namespace Hooks {
 
 
 		if (!strcmp(pSoundEntry, "UIPanorama.popup_accept_match_beep")) {
-			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
+			static auto fnAccept = reinterpret_cast<bool(__stdcall*)(const char*)>(Utils::PatternScan(GetModuleHandleA("client.dll"), "55 8B EC 83 E4 F8 8B 4D 08 BA ? ? ? ? E8 ? ? ? ? 85 C0 75 12"));
 
 			if (fnAccept) {
 
@@ -402,7 +402,7 @@ namespace Hooks {
 	//--------------------------------------------------------------------------------
 	bool __fastcall hkSvCheatsGetBool(PVOID pConVar, void* edx)
 	{
-		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client_panorama.dll"), "85 C0 75 30 38 86");
+		static auto dwCAM_Think = Utils::PatternScan(GetModuleHandleW(L"client.dll"), "85 C0 75 30 38 86");
 		static auto ofunc = sv_cheats.get_original<bool(__thiscall *)(PVOID)>(13);
 		if (!ofunc)
 			return false;
@@ -413,7 +413,7 @@ namespace Hooks {
 	}
 	//--------------------------------------------------------------------------------
 	//int __stdcall hkIsBoxVisible(const Vector& mins, const Vector& maxs) {
-	//	static auto beam_cull_check = Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "85 C0 0F 84 ? ? ? ? 8B 0D ? ? ? ? 8D 54 24 6C");
+	//	static auto beam_cull_check = Utils::PatternScan(GetModuleHandleA("client.dll"), "85 C0 0F 84 ? ? ? ? 8B 0D ? ? ? ? 8D 54 24 6C");
 	//	static auto oIsBoxVisible = iz engineclient;
 
 	//	if (_ReturnAddress() == beam_cull_check) // ring beams
@@ -425,7 +425,7 @@ namespace Hooks {
 	int __fastcall hkGetInt_weapon_debug_spread_show(void* ecx, void* edx) {
 		typedef int(__thiscall* GetInFn)(void*);
 
-		static auto dwRetAddr = Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "85 C0 0F 84 ? ? ? ? E8 ? ? ? ? 99");
+		static auto dwRetAddr = Utils::PatternScan(GetModuleHandleA("client.dll"), "85 C0 0F 84 ? ? ? ? E8 ? ? ? ? 99");
 		if (_ReturnAddress() != dwRetAddr || !g_Misc->options.show_crosshair || !g_LocalPlayer->m_hActiveWeapon())
 			return weapon_debug_spread_show.get_original<GetInFn>(13)(ecx);
 

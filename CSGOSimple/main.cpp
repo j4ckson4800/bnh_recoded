@@ -53,9 +53,9 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         // 
 
         // Panic button
-        //InputSys::Get().RegisterHotkey(VK_DELETE, [base]() {
-        //    g_Unload = true;
-        //});
+        InputSys::Get().RegisterHotkey(VK_DELETE, [base]() {
+            g_Unload = true;
+        });
 
         // Menu Toggle
         InputSys::Get().RegisterHotkey(VK_INSERT, [base]() {

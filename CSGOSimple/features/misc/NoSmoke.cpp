@@ -7,7 +7,7 @@
 
 namespace NoSmoke {
 	void OnFrameStageNotify() {
-		static auto linegoesthrusmoke = Utils::PatternScan(GetModuleHandleA("client_panorama.dll"), "A3 ? ? ? ? 57 8B CB");
+		static auto linegoesthrusmoke = Utils::PatternScan(GetModuleHandleA("client.dll"), "A3 ? ? ? ? 57 8B CB");
 		static bool set = true;
 		std::vector<const char*> vistasmoke_wireframe =
 		{
